@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthy Life - Personalized Recipe</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Chart.js for the Nutrition Chart feature -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Load Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Load Inter (Default Font) and Comfortaa/Afacad Flux (Slide Fonts for Styling) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom styles based on the presentation's design concept */
+        :root {
+            --color-green: #2e7d32; /* Dark Green (Health/Nature) */
+            --color-orange: #ef6c00; /* Dark Orange (Energy/Happiness) */
+            --color-light-green: #e8f5e9;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7; /* Light background */
+        }
+        .text-comfortaa {
+            font-family: 'Comfortaa', cursive;
+        }
+        .btn-primary {
+            background-color: var(--color-orange);
+            color: white;
+            border-radius: 9999px; /* Full rounded */
+            padding: 10px 30px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #fb8c00;
+        }
+    </style>
+</head>
+
+<body class="scroll-smooth">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-lg sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo/Title -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="text-2xl font-bold text-comfortaa text-[var(--color-green)]">Healthy Life<span class="text-[var(--color-orange)]">.</span></a>
+                </div>
+                <!-- Desktop Menu -->
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-8 sm:items-center">
+                    <a href="#home" class="text-gray-500 hover:text-[var(--color-orange)] px-3 py-2 rounded-md text-sm font-medium transition">Home</a>
+                    <a href="#health-check" class="text-gray-500 hover:text-[var(--color-orange)] px-3 py-2 rounded-md text-sm font-medium transition">Health Check</a>
+                    <a href="#recipes" class="text-gray-500 hover:text-[var(--color-orange)] px-3 py-2 rounded-md text-sm font-medium transition">Recipes</a>
+                    <a href="#about" class="text-gray-500 hover:text-[var(--color-orange)] px-3 py-2 rounded-md text-sm font-medium transition">About</a>
+                </div>
+                <!-- Mobile Menu Button (Omitted for single-file focus, but responsive classes used) -->
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- 1. Home Section (Slides 1, 4) -->
+        <section id="home" class="py-20 md:py-32 bg-[var(--color-light-green)]">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-6xl md:text-8xl font-extrabold text-comfortaa text-[var(--color-green)] leading-tight">
+                    Eat Smart, Live Healthy.
+                </h1>
+                <p class="mt-4 text-xl md:text-2xl font-light text-gray-700 max-w-3xl mx-auto">
+                    A personalized recipe platform for everyone who are seeking balanced, quick, and nutritious meals based on their specific health goals.
+                </p>
+                <div class="mt-10">
+                    <a href="#health-check" class="btn-primary text-lg inline-block shadow-xl transform hover:scale-105 transition duration-300">
+                        Start Your Health Check <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Health Check & Personalized Suggestions (Slide 5 Feature 1) -->
+        <section id="health-check" class="py-16 md:py-24">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 bg-white p-8 md:p-12 rounded-xl shadow-2xl border border-gray-100">
+                <h2 class="text-4xl text-comfortaa font-bold text-[var(--color-green)] mb-6 border-b-2 border-[var(--color-orange)] pb-2">
+                    <i class="fa-solid fa-notes-medical mr-3"></i> 1. Health & Goal Check
+                </h2>
+                <p class="mb-8 text-gray-600">Enter your data to calculate your Body Mass Index (BMI) and select your primary goal for tailored recipe suggestions.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- BMI Input Form -->
+                    <div class="md:col-span-2 space-y-4">
+                        <h3 class="text-2xl font-semibold text-[var(--color-orange)] mb-4">Calculate Your BMI</h3>
+                        <div>
+                            <label for="weight" class="block text-sm font-medium text-gray-700">Weight (kg)</label>
+                            <input type="number" id="weight" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-green)] focus:ring-[var(--color-green)] p-2 border" placeholder="e.g., 65">
+                        </div>
+                        <div>
+                            <label for="height" class="block text-sm font-medium text-gray-700">Height (cm)</label>
+                            <input type="number" id="height" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-green)] focus:ring-[var(--color-green)] p-2 border" placeholder="e.g., 175">
+                        </div>
+                        <button onclick="calculateBMI()" class="btn-primary w-full mt-4 text-lg">
+                            Analyze <i class="fa-solid fa-calculator ml-2"></i>
+                        </button>
+                    </div>
+
+                    <!-- BMI Result & Goal Selection -->
+                    <div class="md:col-span-1 bg-[var(--color-light-green)] p-6 rounded-lg shadow-inner">
+                        <h3 class="text-2xl font-semibold text-[var(--color-green)] mb-4">Your Results</h3>
+                        <p id="bmi-result" class="text-xl font-bold mb-2">BMI: N/A</p>
+                        <p id="bmi-status" class="text-md mb-4 text-gray-700">Status: Please enter your data.</p>
+
+                        <h3 class="text-xl font-semibold text-[var(--color-orange)] mt-6 mb-3">My Goal Is...</h3>
+                        <select id="health-goal" onchange="filterRecipes()" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-[var(--color-green)] focus:ring-[var(--color-green)] p-2 border bg-white">
+                            <option value="all">Show All Recipes</option>
+                            <option value="loss">Weight Loss</option>
+                            <option value="gain">Muscle Gain / Energy</option>
+                            <option value="balanced">Balanced Diet</option>
+                            <option value="slim">Get Slim</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="alert-box" class="mt-6 p-4 text-sm rounded-lg text-center font-medium hidden"></div>
+
+            </div>
+        </section>
+
+        <!-- 3. Recipe List (Filtered by Goal) -->
+        <section id="recipes" class="py-16 md:py-24 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl text-comfortaa font-bold text-[var(--color-green)] mb-10 border-b-2 border-[var(--color-orange)] pb-2">
+                    <i class="fa-solid fa-utensils mr-3"></i> 2. Recommended Recipes
+                </h2>
+
+                <div id="recipe-list-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Recipes will be dynamically inserted here -->
+                </div>
+
+                <div id="no-recipes-message" class="text-center p-10 text-xl text-gray-500 hidden">
+                    No recipes found for this goal. Try selecting a different goal!
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Nutrition Visualization (Slide 5 Feature 3) & Menu Plan (Slide 5 Feature 4) -->
+        <section id="nutrition-plan" class="py-16 md:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl text-comfortaa font-bold text-[var(--color-green)] mb-10 border-b-2 border-[var(--color-orange)] pb-2">
+                    <i class="fa-solid fa-chart-pie mr-3"></i> 3. Nutrition & Daily Plan
+                </h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Nutrition Chart (Chart.js) -->
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-semibold text-[var(--color-orange)] mb-4">Daily Nutritional Breakdown (Mock)</h3>
+                        <canvas id="nutritionChart"></canvas>
+                        <p class="text-sm text-gray-500 mt-4">
+                            *This chart represents a healthy, balanced daily target.
+                        </p>
+                    </div>
+
+                    <!-- Daily Menu Plan -->
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-semibold text-[var(--color-orange)] mb-4"><i class="fa-solid fa-calendar-day mr-2"></i> Your Quick Menu Plan</h3>
+                        <p class="text-gray-600 mb-6">Here is a simple, balanced meal plan for today:</p>
+                        <ul class="space-y-4">
+                            <li class="bg-[var(--color-light-green)] p-4 rounded-lg flex items-center shadow-md">
+                                <i class="fa-solid fa-sun text-2xl text-[var(--color-green)] mr-4"></i>
+                                <div>
+                                    <span class="font-bold">Breakfast:</span> Overnight Oats with Berries (Balanced)
+                                </div>
+                            </li>
+                            <li class="bg-gray-100 p-4 rounded-lg flex items-center shadow-md">
+                                <i class="fa-solid fa-burger text-2xl text-[var(--color-green)] mr-4"></i>
+                                <div>
+                                    <span class="font-bold">Lunch:</span> Simple Chicken and Veggie Stir-fry (Muscle Gain)
+                                </div>
+                            </li>
+                            <li class="bg-[var(--color-light-green)] p-4 rounded-lg flex items-center shadow-md">
+                                <i class="fa-solid fa-moon text-2xl text-[var(--color-green)] mr-4"></i>
+                                <div>
+                                    <span class="font-bold">Dinner:</span> Lentil Soup with Whole Wheat Bread (Weight Loss)
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. About/Mission (Slides 2, 3, 9) -->
+        <section id="about" class="py-16 md:py-24 bg-[var(--color-green)] text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl text-comfortaa font-bold mb-10 border-b-2 border-white pb-2">
+                    Our Mission
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="p-6 bg-white/10 rounded-xl shadow-lg">
+                        <i class="fa-solid fa-bullseye text-3xl text-[var(--color-orange)] mb-3"></i>
+                        <h3 class="text-xl font-semibold mb-2">Addressing the Problem</h3>
+                        <p class="text-sm opacity-90">
+                            Many students face unbalanced nutrition and poor dietary habits due to busy schedules and limited cooking knowledge. We provide the quick, tech-based solution needed.
+                        </p>
+                    </div>
+                    <div class="p-6 bg-white/10 rounded-xl shadow-lg">
+                        <i class="fa-solid fa-heart-pulse text-3xl text-[var(--color-orange)] mb-3"></i>
+                        <h3 class="text-xl font-semibold mb-2">SDG Alignment: Goal 3</h3>
+                        <p class="text-sm opacity-90">
+                            By promoting healthier eating and dietary planning, we directly contribute to 'Good Health and Well-being' for all ages, especially young adults.
+                        </p>
+                    </div>
+                    <div class="p-6 bg-white/10 rounded-xl shadow-lg">
+                        <i class="fa-solid fa-recycle text-3xl text-[var(--color-orange)] mb-3"></i>
+                        <h3 class="text-xl font-semibold mb-2">Expected Effect: Less Waste</h3>
+                        <p class="text-sm opacity-90">
+                            Our menu planning encourages cooking at home with specific, balanced ingredients, naturally leading to a reduction in food waste.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2025 Healthy Life Project. All rights reserved.</p>
+            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for student health.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA: Mock Recipe Database ---
+        const recipes = [
+            { id: 1, title: "Overnight Oats with Berries", description: "A quick, high-fiber breakfast perfect for busy mornings.", tags: ["balanced", "loss", "quick"], macros: "Carbs: High, Protein: Low" },
+            { id: 2, title: "Simple Chicken Stir-fry", description: "High protein and full of vegetables. customizable with any leftover veggies.", tags: ["gain", "balanced", "quick"], macros: "Protein: High, Fat: Low" },
+            { id: 3, title: "Lentil Soup", description: "A warm, filling, and low-calorie vegetarian option.", tags: ["loss", "balanced"], macros: "Fiber: High, Fat: Low" },
+            { id: 4, title: "Tuna & Avocado Wrap", description: "Healthy fats and protein for a fast, nutritious lunch.", tags: ["gain", "balanced", "quick"], macros: "Protein: High, Fat: Med" },
+            { id: 5, title: "Spicy Tofu & Rice Bowl", description: "Vegetarian high-protein option for sustained energy.", tags: ["gain", "balanced"], macros: "Protein: High, Carbs: Med" },
+            { id: 6, title: "Grilled Salmon & Asparagus", description: "Excellent source of Omega-3s and lean protein.", tags: ["loss", "gain", "balanced"], macros: "Protein: High, Fat: High (Healthy)" },
+            { id: 7, title: "Quick Egg Scramble", description: "Ready in 5 minutes! Essential morning protein.", tags: ["all", "gain", "quick"], macros: "Protein: High, Fat: Med" },
+        ];
+
+        // --- CORE LOGIC: BMI Calculation ---
+        function calculateBMI() {
+            const weightKg = parseFloat(document.getElementById('weight').value);
+            const heightCm = parseFloat(document.getElementById('height').value);
+            const resultElement = document.getElementById('bmi-result');
+            const statusElement = document.getElementById('bmi-status');
+            const alertBox = document.getElementById('alert-box');
+
+            // Clear previous alert
+            alertBox.classList.add('hidden');
+            alertBox.textContent = '';
+
+            if (isNaN(weightKg) || isNaN(heightCm) || weightKg <= 0 || heightCm <= 0) {
+                alertBox.classList.remove('hidden');
+                alertBox.classList.add('bg-red-100', 'border', 'border-red-400', 'text-red-700');
+                alertBox.textContent = "Please enter valid weight and height values (must be positive numbers).";
+                resultElement.textContent = "BMI: N/A";
+                statusElement.textContent = "Status: Invalid Input";
+                return;
+            }
+
+            // Convert height from cm to meters
+            const heightM = heightCm / 100;
+
+            // Calculate BMI: weight (kg) / [height (m)]^2
+            const bmi = weightKg / (heightM * heightM);
+            const roundedBmi = bmi.toFixed(1);
+
+            let statusText = "";
+            let statusColor = "text-gray-700";
+
+            if (bmi < 18.5) {
+                statusText = "Underweight";
+                statusColor = "text-orange-600";
+            } else if (bmi >= 18.5 && bmi < 25) {
+                statusText = "Healthy Weight";
+                statusColor = "text-green-600";
+            } else if (bmi >= 25 && bmi < 30) {
+                statusText = "Overweight";
+                statusColor = "text-yellow-600";
+            } else {
+                statusText = "Obese";
+                statusColor = "text-red-600";
+            }
+
+            resultElement.textContent = `BMI: ${roundedBmi}`;
+            statusElement.textContent = `Status: ${statusText}`;
+            statusElement.className = `text-md mb-4 font-semibold ${statusColor}`;
+
+            // Automatically scroll to recipes after check
+            setTimeout(() => {
+                document.getElementById('recipes').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+
+            filterRecipes(); // Re-filter based on potential user intention implied by BMI
+        }
+
+        // --- RECIPE DISPLAY & FILTERING ---
+        function renderRecipes(filteredRecipes) {
+            const container = document.getElementById('recipe-list-container');
+            const noMessage = document.getElementById('no-recipes-message');
+            container.innerHTML = '';
+
+            if (filteredRecipes.length === 0) {
+                container.classList.add('hidden');
+                noMessage.classList.remove('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            noMessage.classList.add('hidden');
+
+            filteredRecipes.forEach(recipe => {
+                const tagIcons = {
+                    "balanced": "fa-seedling",
+                    "loss": "fa-fire",
+                    "gain": "fa-dumbbell",
+                    "quick": "fa-stopwatch",
+                };
+
+                const tagsHtml = recipe.tags.map(tag => `
+                    <span class="text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 flex items-center">
+                        <i class="fa-solid ${tagIcons[tag] || 'fa-tag'} mr-1"></i> ${tag.charAt(0).toUpperCase() + tag.slice(1)}
+                    </span>
+                `).join('');
+
+                container.innerHTML += `
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transition duration-300 hover:shadow-xl hover:scale-[1.02]">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-2 mb-3">
+                                ${tagsHtml}
+                            </div>
+                            <h3 class="text-2xl font-semibold text-comfortaa text-[var(--color-green)] mb-2">${recipe.title}</h3>
+                            <p class="text-gray-600 text-sm mb-4">${recipe.description}</p>
+                            <div class="text-sm text-gray-500 mb-4 border-t pt-3">
+                                <p class="font-medium">Key Macros: <span class="text-[var(--color-orange)]">${recipe.macros}</span></p>
+                            </div>
+                            <button onclick="viewDetails(${recipe.id})" class="text-[var(--color-orange)] font-semibold hover:text-[var(--color-green)] transition flex items-center">
+                                View Recipe <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterRecipes() {
+            const selectedGoal = document.getElementById('health-goal').value;
+            let filtered;
+
+            if (selectedGoal === 'all') {
+                filtered = recipes;
+            } else {
+                filtered = recipes.filter(recipe => recipe.tags.includes(selectedGoal));
+            }
+
+            renderRecipes(filtered);
+        }
+
+        function viewDetails(id) {
+            // Simple mock detail view: In a real app, this would load a dedicated page
+            const recipe = recipes.find(r => r.id === id);
+            if (recipe) {
+                document.getElementById('alert-box').classList.remove('hidden', 'bg-red-100', 'border-red-400', 'text-red-700');
+                document.getElementById('alert-box').classList.add('bg-blue-100', 'border', 'border-blue-400', 'text-blue-700');
+                document.getElementById('alert-box').innerHTML = `
+                    <p class="font-bold">Recipe Detail Mock for: ${recipe.title}</p>
+                    <p>Ingredients: Chicken breast, Mixed vegetables, Soy sauce, Garlic.</p>
+                    <p>Instructions: 1. Chop ingredients. 2. Stir-fry chicken. 3. Add veggies. 4. Season and serve!</p>
+                    <p class="text-xs mt-2">In a full application, this would link to a detailed page (Slide 6 'Detail' stage).</p>
+                `;
+                document.getElementById('alert-box').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // --- CHART.JS INITIALIZATION (MOCK) ---
+        function initChart() {
+            const ctx = document.getElementById('nutritionChart').getContext('2d');
+            const nutritionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Protein', 'Carbohydrates', 'Fats', 'Fiber'],
+                    datasets: [{
+                        label: 'Daily Macro Targets',
+                        data: [35, 45, 15, 5], // Percentages
+                        backgroundColor: [
+                            '#2e7d32', /* Green */
+                            '#ef6c00', /* Orange */
+                            '#ffb300', /* Amber */
+                            '#66bb6a' /* Light Green */
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: 'Inter'
+                                }
+                            }
+                        },
+                        title: {
+                            display: false,
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            // Render all recipes by default on load
+            renderRecipes(recipes);
+        });
+    </script>
+</body>
+</html>
