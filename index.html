@@ -231,7 +231,7 @@
     <footer class="bg-gray-800 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 Healthy Life Project. All rights reserved.</p>
-            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.0.4</p>
+            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.0.5</p>
         </div>
     </footer>
 
@@ -239,12 +239,12 @@
         // --- DATA: Mock Recipe Database ---
         const recipes = [
             { id: 1, title: "Overnight Oats with Berries", description: "A quick, high-fiber breakfast perfect for busy mornings.", tags: ["balanced", "loss", "quick"], macros: "Carbs: High, Protein: Low", calories: "230~500 kcal", image: "images/overnight-oats.jpg" },
-            { id: 2, title: "Simple Chicken Stir-fry", description: "High protein and full of vegetables. customizable with any leftover veggies.", tags: ["gain", "balanced", "quick"], macros: "Protein: High, Fat: Low" },
-            { id: 3, title: "Lentil Soup", description: "A warm, filling, and low-calorie vegetarian option.", tags: ["loss", "balanced"], macros: "Fiber: High, Fat: Low" },
-            { id: 4, title: "Tuna & Avocado Wrap", description: "Healthy fats and protein for a fast, nutritious lunch.", tags: ["gain", "balanced", "quick"], macros: "Protein: High, Fat: Med" },
-            { id: 5, title: "Spicy Tofu & Rice Bowl", description: "Vegetarian high-protein option for sustained energy.", tags: ["gain", "balanced"], macros: "Protein: High, Carbs: Med" },
-            { id: 6, title: "Grilled Salmon & Asparagus", description: "Excellent source of Omega-3s and lean protein.", tags: ["loss", "gain", "balanced"], macros: "Protein: High, Fat: High (Healthy)" },
-            { id: 7, title: "Quick Egg Scramble", description: "Ready in 5 minutes! Essential morning protein.", tags: ["all", "gain", "quick"], macros: "Protein: High, Fat: Med" },
+            { id: 2, title: "Simple Chicken Stir-fry", description: "High protein and full of vegetables. customizable with any leftover veggies.", tags: ["gain", "balanced", "quick"], macros: "Protein: High, Fat: Low", calories: "0~0 kcal", image: "images/-" },
+            { id: 3, title: "Lentil Soup", description: "A warm, filling, and low-calorie vegetarian option.", tags: ["loss", "balanced"], macros: "Fiber: High, Fat: Low", calories: "0~0 kcal", image: "images/-" },
+            { id: 4, title: "Tuna & Avocado Wrap", description: "Healthy fats and protein for a fast, nutritious lunch.", tags: ["gain", "balanced", "quick"], macros: "Protein: High, Fat: Med", calories: "0~0 kcal", image: "images/-" },
+            { id: 5, title: "Spicy Tofu & Rice Bowl", description: "Vegetarian high-protein option for sustained energy.", tags: ["gain", "balanced"], macros: "Protein: High, Carbs: Med", calories: "0~0 kcal", image: "images/-" },
+            { id: 6, title: "Grilled Salmon & Asparagus", description: "Excellent source of Omega-3s and lean protein.", tags: ["loss", "gain", "balanced"], macros: "Protein: High, Fat: High (Healthy)", calories: "0~0 kcal", image: "images/-" },
+            { id: 7, title: "Quick Egg Scramble", description: "Ready in 5 minutes! Essential morning protein.", tags: ["all", "gain", "quick"], macros: "Protein: High, Fat: Med", calories: "0~0 kcal", image: "images/-" },
         ];
 
         // --- CORE LOGIC: BMI Calculation ---
@@ -341,8 +341,14 @@
                             </div>
                             <h3 class="text-2xl font-semibold text-comfortaa text-[var(--color-green)] mb-2">${recipe.title}</h3>
                             <p class="text-gray-600 text-sm mb-4">${recipe.description}</p>
+                            
+                            <div class="mb-4">
+                            <img src="${recipe.image}" alt="Photo of ${recipe.title}" class="recipe-card-image w-full h-48 object-cover rounded-lg shadow-md">
+                            </div>
+                            
                             <div class="text-sm text-gray-500 mb-4 border-t pt-3">
                                 <p class="font-medium">Key Macros: <span class="text-[var(--color-orange)]">${recipe.macros}</span></p>
+                                <p class="font-medium">Calories: <span class="text-[var(--color-orange)]">${recipe.calories}</span></p>
                             </div>
                             <button onclick="viewDetails(${recipe.id})" class="text-[var(--color-orange)] font-semibold hover:text-[var(--color-green)] transition flex items-center">
                                 View Recipe <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
