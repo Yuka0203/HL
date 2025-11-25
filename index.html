@@ -231,7 +231,7 @@
     <footer class="bg-gray-800 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 Healthy Life Project. All rights reserved.</p>
-            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.1.6</p>
+            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.1.7</p>
         </div>
     </footer>
 
@@ -240,7 +240,7 @@
         const recipes = [
             { id: 1, title: "Overnight Oats with Berries", description: "A quick, high-fiber breakfast perfect for busy mornings.", tags: ["balanced", "loss", "quick"], macros: "Carbs: High, Protein: Low", 
              calories: "230~500 kcal", image: "images/overnight-oats.jpg", 
-             directions: "1. In a medium size bowl, whisk together corn starch and water. Add remaining ingredients (chicken broth, soy sauce, honey, and toasted sesame oil, red pepper flakes) and whisk to combine. Set aside. <br>2. Add one tablespoon of olive oil to a large skillet or wok and heat over medium high heat. </br><br>3. Add chicken (in batches if necessary) and season with salt and pepper. Cook for 3 to 5 minutes or until cooked through. Remove from skillet.</br><br>4. Reduce heat to medium and add remaining tablespoon of oil to the skillet.</br>" },
+             directions: "1. In a medium size bowl, whisk together corn starch and water. Add remaining ingredients (chicken broth, soy sauce, honey, and toasted sesame oil, red pepper flakes) and whisk to combine. Set aside. 2. Add one tablespoon of olive oil to a large skillet or wok and heat over medium high heat. 3. Add chicken (in batches if necessary) and season with salt and pepper. Cook for 3 to 5 minutes or until cooked through. Remove from skillet.4. Reduce heat to medium and add remaining tablespoon of oil to the skillet." },
             { id: 2, title: "Simple Chicken Stir-fry", description: "High protein and full of vegetables. customizable with any leftover veggies.", tags: ["gain", "balanced", "quick"], macros: "Protein: High, Fat: Low", calories: "296~540 kcal", image: "images/simplechicken.jpg" },
             { id: 3, title: "Lentil Soup", description: "A warm, filling, and low-calorie vegetarian option.", tags: ["loss", "balanced"], macros: "Fiber: High, Fat: Low", calories: "144~300 kcal", image: "images/lentilsoup.jpg" },
             { id: 4, title: "Tuna & Avocado Wrap", description: "Healthy fats and protein for a fast, nutritious lunch.", tags: ["gain", "balanced", "quick"], macros: "Protein: High, Fat: Med", calories: "230~550 kcal", image: "images/tunaavocado.jpg" },
@@ -387,10 +387,9 @@
         
         // 3. Update the inner HTML with the recipe details, including the full directions
         alertBox.innerHTML = `
-            <p class="font-bold">Recipe Directions for: ${recipe.title}</p>
+            <p class="font-bold">Recipe Directions for: </p><h2>${recipe.title}</h2>
             <p class="mt-2 font-semibold">Directions:</p>
             <pre class="whitespace-pre-wrap">${recipe.directions}</pre>
-            <p class="text-xs mt-3">This detail is displayed on the current page.</p>
         `;
         
         // 4. Scroll the user's view to the new alert box
