@@ -462,7 +462,7 @@
                             <div class="text-sm text-gray-500 mb-4 border-t pt-3">
                                 <p class="font-bold text-gray-700"><i class="fa-solid fa-bolt mr-1 text-[var(--color-orange)]"></i> Calories: ${recipe.calories}</p>
                                 <p class="font-bold text-gray-700"><i class="fa-solid fa-list-ul mr-1 text-[var(--color-orange)]"></i> ${recipe.macros}</p>
-                                <p class="font-bold text-gray-700"><i class="fa-solid fa-list-ul mr-1 text-[var(--color-orange)]">Times: </i> ${recipe.time}</p>
+                                <p class="font-bold text-gray-700"><i class="fa-solid fa-list-ul mr-1 text-[var(--color-orange)]"></i> Times: ${recipe.time}</p>
                             </div>
 
                             <button onclick="openRecipeModal(${recipe.id})" class="mt-2 btn-primary w-full text-center text-sm inline-block py-2 px-4 shadow-lg">
@@ -502,7 +502,6 @@
         document.getElementById('modal-description').textContent = recipe.description;
         document.getElementById('modal-calories').textContent = recipe.calories;
         document.getElementById('modal-macros').textContent = recipe.macros;
-        document.getElementById('modal-ingredients').textContent = recipe.ingredients;
         
         // Format directions (replace \n with <br>)
         const formattedDirections = recipe.directions.split('\n').map(line => `<li class="mb-2">${line.trim()}</li>`).join('');
