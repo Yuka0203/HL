@@ -223,27 +223,12 @@
                     <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg">
                         <h3 class="text-2xl font-semibold text-[var(--color-orange)] mb-4"><i class="fa-solid fa-calendar-day mr-2"></i> Your Quick Menu Plan</h3>
                         <p class="text-gray-600 mb-6">Here is a simple, balanced meal plan for today:</p>
-                        <ul class="space-y-4">
-                            <li class="bg-[var(--color-light-green)] p-4 rounded-lg flex items-center shadow-md">
-                                <i class="fa-solid fa-sun text-2xl text-[var(--color-green)] mr-4"></i>
-                                <div>
-                                    <span class="font-bold">Breakfast:</span> Overnight Oats with Berries (Balanced)
-                                </div>
-                            </li>
-                            <li class="bg-gray-100 p-4 rounded-lg flex items-center shadow-md">
-                                <i class="fa-solid fa-burger text-2xl text-[var(--color-green)] mr-4"></i>
-                                <div>
-                                    <span class="font-bold">Lunch:</span> Simple Chicken and Veggie Stir-fry (Muscle Gain)
-                                </div>
-                            </li>
-                            <li class="bg-[var(--color-light-green)] p-4 rounded-lg flex items-center shadow-md">
-                                <i class="fa-solid fa-moon text-2xl text-[var(--color-green)] mr-4"></i>
-                                <div>
-                                    <span class="font-bold">Dinner:</span> Lentil Soup with Whole Wheat Bread (Weight Loss)
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                        
+                       <div id="menu-plan-container">
+                           
+                       </div>
+
+                        
                 </div>
             </div>
         </section>
@@ -285,7 +270,7 @@
     <footer class="bg-gray-800 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 Healthy Life Project. All rights reserved.</p>
-            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.3.6</p>
+            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.4.6</p>
         </div>
     </footer>
 
@@ -486,16 +471,18 @@
         function filterRecipes() {
         const selectedGoal = document.getElementById('health-goal').value;
 
-        const filtered = recipes.filter(recipe => {
-            if (selectedGoal === 'all') {
-                return true;
-            }
-            return recipe.tags.includes(selectedGoal);
-        });
+            const filtered = selectedGoal === 'all' ? recipes : recipes.filter(r => r.tags.includes(selectedGoal));
+            renderRecipes(filtered);
 
-        renderRecipes(filtered);
-    }
+            // 2. チャートの更新
+            updateChart(selectedGoal);
 
+            // 3. メニュープランの更新
+            updateMenuPlan(selectedGoal);
+        }
+
+
+        
     // --- MODAL & NUTRITION CHART FUNCTIONS ---
 
     let recipeModal; // Variable to hold the modal instance
@@ -538,44 +525,6 @@
     }
 
 
-        
-    // Chart initialization (runs on page load)
- //   function initializeNutritionChart() {
-       // const ctx = document.getElementById('nutritionChart').getContext('2d');
-      //  new Chart(ctx, {
-        //    type: 'doughnut',
-          //  data: {
-            //    labels: ['Carbs', 'Protein', 'Fats'],
-              //  datasets: [{
-                //    label: 'Daily Macro Goals (EER)',
-                  //  data: [45, 30, 25], // Example Ratios (45% Carbs, 30% Protein, 25% Fat)
-                    //backgroundColor: [
-                      //  'rgba(239, 108, 0, 0.8)', // Orange
-                        //'rgba(46, 125, 50, 0.8)', // Dark Green
-                        //'rgba(170, 170, 170, 0.8)' // Gray
-                    //],
-                    //borderColor: [
-                    //    '#fff',
-                      //  '#fff',
-                        //'#fff'
-                    //],
-                    //borderWidth: 1
-                //}]
-            //},
-            //options: {
-            //    responsive: true,
-              //  plugins: {
-                //    legend: {
-                  //      position: 'top',
-                    //},
-                    //title: {
-                      //  display: false,
-                    //}
-                //}
-            //},
-        //});
-    //}
-
 
 
 
@@ -584,15 +533,50 @@
         // 2. ゴールに応じたPFCバランス（炭水化物/タンパク質/脂質）の定義
 // --- DATA: goalSettings と recipes は既存のものを使用 ---
 const goalSettings = {
-    "loss": { ratio: [40, 40, 20], label: "Low Carb / High Protein" },
-    "gain": { ratio: [50, 30, 20], label: "High Carb / High Protein" },
-    "balanced": { ratio: [50, 20, 30], label: "Standard Balanced" },
-    "slim": { ratio: [45, 25, 30], label: "Lean Focus" },
-    "vegetarian": { ratio: [55, 20, 25], label: "Plant-based Balance" }
-};
+            all: {
+                chartData: [25, 50, 20, 5],
+                menu: [
+                    { time: "Breakfast", name: "Overnight Oats", id: 1 },
+                    { time: "Lunch", name: "Simple Chicken Stir-fry", id: 2 },
+                    { time: "Dinner", name: "Lentil Soup", id: 3 }
+                ]
+            },
+            loss: {
+                chartData: [30, 30, 30, 10], // Protein, Carbs, Fats, Fiber
+                menu: [
+                    { time: "Breakfast", name: "Overnight Oats", id: 1 },
+                    { time: "Lunch", name: "Grilled Salmon", id: 6 },
+                    { time: "Dinner", name: "Lentil Soup", id: 3 }
+                ]
+            },
+            gain: {
+                chartData: [40, 45, 10, 5],
+                menu: [
+                    { time: "Breakfast", name: "Quick Egg Scramble", id: 7 },
+                    { time: "Lunch", name: "Simple Chicken Stir-fry", id: 2 },
+                    { time: "Dinner", name: "Spicy Tofu & Rice Bowl", id: 5 }
+                ]
+            },
+            balanced: {
+                chartData: [25, 50, 20, 5],
+                menu: [
+                    { time: "Breakfast", name: "Overnight Oats", id: 1 },
+                    { time: "Lunch", name: "Tuna & Avocado Wrap", id: 4 },
+                    { time: "Dinner", name: "Grilled Salmon", id: 6 }
+                ]
+            },
+            slim: {
+                chartData: [20, 40, 30, 10],
+                menu: [
+                    { time: "Breakfast", name: "Overnight Oats", id: 1 },
+                    { time: "Lunch", name: "Lentil Soup", id: 3 },
+                    { time: "Dinner", name: "Grilled Salmon", id: 6 }
+                ]
+            }
+        };
 
 let nutritionChart; // チャートのインスタンス保持用
-//letlet・let・・let・let recipeM;  
+
 
 // 1. 【エラー解消】初期化関数を定義
 function initializeNutritionChart() {
@@ -616,7 +600,7 @@ function updateNutritionChart(ratios, tdee) {
     nutritionChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: [`Carbs (${ratios[0]}%)`, `Protein (${ratios[1]}%)`, `Fats (${ratios[2]}%)`],
+            labels: ['Carbs', 'Protein', 'Fats'],
             datasets: [{
                 data: ratios,
                 backgroundColor: ['rgba(239, 108, 0, 0.8)', 'rgba(46, 125, 50, 0.8)', 'rgba(170, 170, 170, 0.8)'],
@@ -625,12 +609,38 @@ function updateNutritionChart(ratios, tdee) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: { position: 'top' }
             }
         }
     });
 }
+
+
+
+        // --- メニュープラン更新関数 ---
+function updateMenuPlan(goal) {
+    const planContainer = document.getElementById('menu-plan-container'); // HTML側にこのIDがある想定
+    if (!planContainer) return;
+
+    const setting = goalSettings[goal] || goalSettings['balanced'];
+    const menuHtml = setting.menu.map(item => `
+        <div class="flex items-center justify-between p-3 border-b border-gray-100 last:border-0">
+            <span class="font-bold text-[var(--color-green)] w-24">${item.time}:</span>
+            <span class="text-gray-700 flex-1">${item.name}</span>
+            <button onclick="openRecipeModal(${item.id})" class="text-xs bg-[var(--color-orange)] text-white px-2 py-1 rounded hover:opacity-80">
+                View
+            </button>
+        </div>
+    `).join('');
+
+    planContainer.innerHTML = menuHtml;
+}
+
+
+
+        
 
 // 3. モーダルを開く関数（材料とアイコン対応版）
 function openRecipeModal(recipeId) {
@@ -643,8 +653,6 @@ function openRecipeModal(recipeId) {
     document.getElementById('modal-description').textContent = recipe.description;
     document.getElementById('modal-calories').textContent = recipe.calories;
     document.getElementById('modal-macros').textContent = recipe.macros;
-    
-    // アイコン付きデータの更新
     document.getElementById('modal-time').textContent = recipe.time;
     document.getElementById('modal-servings').textContent = recipe.servings;
 
@@ -659,7 +667,7 @@ function openRecipeModal(recipeId) {
         .filter(line => line.trim() !== '')
         .map(line => `<li class="mb-2">${line.trim()}</li>`).join('');
     document.getElementById('modal-directions-list').innerHTML = `<ol class="list-decimal list-inside">${directionsHtml}</ol>`;
-
+    
     // モーダル表示
     recipeModal.classList.remove('hidden');
     recipeModal.setAttribute('aria-hidden', 'false');
