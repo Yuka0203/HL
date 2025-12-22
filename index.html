@@ -270,7 +270,7 @@
     <footer class="bg-gray-800 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 Healthy Life Project. All rights reserved.</p>
-            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.4.6</p>
+            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.4.5</p>
         </div>
     </footer>
 
@@ -587,7 +587,7 @@ function initializeNutritionChart() {
 }
 
 // 2. チャート更新関数
-function updateNutritionChart(ratios, tdee) {
+function updateChart(ratios, tdee) {
     const canvas = document.getElementById('nutritionChart');
     if (!canvas) return; // キャンバスがない場合はスキップ
 
@@ -600,7 +600,7 @@ function updateNutritionChart(ratios, tdee) {
     nutritionChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Carbs', 'Protein', 'Fats'],
+            labels: [`Carbs (${ratios[0]}%)`, `Protein (${ratios[1]}%)`, `Fats (${ratios[2]}%)`],
             datasets: [{
                 data: ratios,
                 backgroundColor: ['rgba(239, 108, 0, 0.8)', 'rgba(46, 125, 50, 0.8)', 'rgba(170, 170, 170, 0.8)'],
