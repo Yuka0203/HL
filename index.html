@@ -270,7 +270,7 @@
     <footer class="bg-gray-800 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 Healthy Life Project. All rights reserved.</p>
-            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.3.5</p>
+            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.3.6</p>
         </div>
     </footer>
 
@@ -512,11 +512,6 @@
         recipeModal.setAttribute('aria-hidden', 'true');
     }
 
-
-
-
-
-
         
         // 2. ゴールに応じたPFCバランス（炭水化物/タンパク質/脂質）の定義
 // --- DATA: goalSettings と recipes は既存のものを使用 ---
@@ -566,31 +561,52 @@ const goalSettings = {
 let nutritionChart; // チャートのインスタンス保持用
 
 
-// 1. 【エラー解消】初期化関数を定義
 function initializeNutritionChart() {
-    // 起動時はデフォルトの "balanced" でチャートを表示
-    const defaultGoal = "balanced";
-    const setting = goalSettings[defaultGoal];
-    updateChart(setting.ratio, 2000); 
+    // セレクトボックスの現在の値を取得してチャートを更新
+    const goalSelect = document.getElementById('health-goal');
+    const currentGoal = goalSelect ? goalSelect.value : 'balanced';
+    updateChart(currentGoal);
 }
 
+
+        
+
 // 2. チャート更新関数
-function updateChart(ratios, tdee) {
+function updateChart(goal) {
     const canvas = document.getElementById('nutritionChart');
     if (!canvas) return; // キャンバスがない場合はスキップ
 
     const ctx = canvas.getContext('2d');
+
+// --- エラー対策: goal が 'all' の場合や、データがない場合の予備設定 ---
+    let setting = goalSettings[goal];
+    
+    // もし goalSettings[goal] が存在しない、または chartData がない場合は 'balanced' を使う
+    if (!setting || !setting.chartData) {
+        setting = goalSettings['balanced'];
+    }
+
+    // データ抽出 (Protein, Carbs, Fats, Fiber の順)
+    // 安全に数値を取り出すために ratios を作成
+    const p = setting.chartData[0]; // Protein
+    const c = setting.chartData[1]; // Carbs
+    const f = setting.chartData[2]; // Fats
+
     
     if (nutritionChart) {
         nutritionChart.destroy();
     }
 
+    if (typeof Chart === 'undefined') return;
+
+
+    
     nutritionChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: [`Carbs (${ratios[0]}%)`, `Protein (${ratios[1]}%)`, `Fats (${ratios[2]}%)`],
+            labels: [`Carbs (${c}%)`, `Protein (${p}%)`, `Fats (${f}%)`],
             datasets: [{
-                data: ratios,
+                data: [c, p, f],
                 backgroundColor: ['rgba(239, 108, 0, 0.8)', 'rgba(46, 125, 50, 0.8)', 'rgba(170, 170, 170, 0.8)'],
                 borderWidth: 1
             }]
@@ -599,7 +615,7 @@ function updateChart(ratios, tdee) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'top' }
+                legend: { position: 'bottom' }
             }
         }
     });
