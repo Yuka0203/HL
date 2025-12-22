@@ -468,19 +468,7 @@
         });
     }
 
-        function filterRecipes() {
-        const selectedGoal = document.getElementById('health-goal').value;
-
-            const filtered = selectedGoal === 'all' ? recipes : recipes.filter(r => r.tags.includes(selectedGoal));
-            renderRecipes(filtered);
-
-            // 2. チャートの更新
-            updateChart(selectedGoal);
-
-            // 3. メニュープランの更新
-            updateMenuPlan(selectedGoal);
-        }
-
+        
 
         
     // --- MODAL & NUTRITION CHART FUNCTIONS ---
@@ -639,6 +627,18 @@ function updateMenuPlan(goal) {
 }
 
 
+function filterRecipes() {
+        const selectedGoal = document.getElementById('health-goal').value;
+
+            const filtered = selectedGoal === 'all' ? recipes : recipes.filter(r => r.tags.includes(selectedGoal));
+            renderRecipes(filtered);
+
+            // 2. チャートの更新
+            updateChart(selectedGoal);
+
+            // 3. メニュープランの更新
+            updateMenuPlan(selectedGoal);
+        }
 
         
 
