@@ -233,6 +233,38 @@
             </div>
         </section>
 
+
+
+
+
+
+        <section id="game-section" class="mt-12 p-6 bg-white rounded-2xl shadow-lg text-center">
+    <h3 class="text-2xl font-bold mb-4 text-comfortaa">PFC Nutri-Catch</h3>
+    <p class="text-sm text-gray-600 mb-4">目標に合わせて栄養をキャッチ！</p>
+    
+    <div class="relative inline-block border-4 border-[var(--color-green)] rounded-xl overflow-hidden bg-blue-50">
+        <canvas id="gameCanvas" width="400" height="500"></canvas>
+        <div id="game-overlay" class="absolute inset-0 flex items-center justify-center bg-black/50 hidden">
+            <button onclick="startGame()" class="btn-primary py-2 px-6">Game Start!</button>
+        </div>
+    </div>
+    
+    <div id="game-stats" class="mt-4 flex justify-center gap-4 font-bold">
+        <span class="text-orange-600">Carbs: <span id="g-carbs">0</span></span>
+        <span class="text-green-700">Protein: <span id="g-protein">0</span></span>
+        <span class="text-gray-500">Fats: <span id="g-fats">0</span></span>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+        
+
         <!-- 5. About/Mission -->
         <section id="about" class="py-16 md:py-24 bg-[var(--color-green)] text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -270,7 +302,7 @@
     <footer class="bg-gray-800 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 Healthy Life Project. All rights reserved.</p>
-            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.3.6</p>
+            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.4.6</p>
         </div>
     </footer>
 
@@ -706,6 +738,106 @@ document.addEventListener('DOMContentLoaded', () => {
     // チャートを初期化（これでエラーが消えます）
     initializeNutritionChart();
 });
+
+
+
+
+
+
+
+
+
+
+
+
+        const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let score = { p: 0, c: 0, f: 0 };
+let gameActive = false;
+
+// 食材のデータ
+const items = [
+    { name: 'P', color: '#2e7d32', label: '🥩' }, // Protein
+    { name: 'C', color: '#ef6c00', label: '🍚' }, // Carbs
+    { name: 'F', color: '#9e9e9e', label: '🧈' }  // Fats
+];
+
+let fallingItems = [];
+let basket = { x: 175, y: 450, width: 50, height: 20 };
+
+// ゲームのメインループ
+function gameLoop() {
+    if (!gameActive) return;
+
+    // 背景クリア
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // カゴの描画
+    ctx.fillStyle = '#5d4037';
+    ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
+
+    // 食材の生成（ランダム）
+    if (Math.random() < 0.03) {
+        const type = items[Math.floor(Math.random() * items.length)];
+        fallingItems.push({ x: Math.random() * (canvas.width - 20), y: 0, ...type });
+    }
+
+    // 食材の移動と描画
+    fallingItems.forEach((item, index) => {
+        item.y += 3; // 落ちる速度
+        ctx.font = '24px serif';
+        ctx.fillText(item.label, item.x, item.y);
+
+        // 当たり判定（カゴでキャッチしたか）
+        if (item.y > basket.y && item.x > basket.x && item.x < basket.x + basket.width) {
+            updateGameScore(item.name);
+            fallingItems.splice(index, 1);
+        }
+    });
+
+    requestAnimationFrame(gameLoop);
+}
+
+function updateGameScore(type) {
+    if (type === 'P') score.p++;
+    if (type === 'C') score.c++;
+    if (type === 'F') score.f++;
+    
+    document.getElementById('g-protein').innerText = score.p;
+    document.getElementById('g-carbs').innerText = score.c;
+    document.getElementById('g-fats').innerText = score.f;
+}
+
+// マウス移動でカゴを操作
+canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    basket.x = e.clientX - rect.left - basket.width / 2;
+});
+
+function startGame() {
+    score = { p: 0, c: 0, f: 0 };
+    fallingItems = [];
+    gameActive = true;
+    document.getElementById('game-overlay').classList.add('hidden');
+    gameLoop();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
 
 </script>
 
