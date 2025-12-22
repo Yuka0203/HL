@@ -243,10 +243,14 @@
     <p class="text-sm text-gray-600 mb-4">目標に合わせて栄養をキャッチ！</p>
     
     <div class="relative inline-block border-4 border-[var(--color-green)] rounded-xl overflow-hidden bg-blue-50">
-        <canvas id="gameCanvas" width="400" height="500"></canvas>
-        <div id="game-overlay" class="absolute inset-0 flex items-center justify-center bg-black/50 hidden">
-            <button onclick="startGame()" class="btn-primary py-2 px-6">Game Start!</button>
-        </div>
+        <canvas id="gameCanvas" width="1200" height="500"></canvas>
+        
+        <div id="game-overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 transition-all">
+        <h4 class="text-white text-xl font-bold mb-4">Nutri-Catch Game</h4>
+        <button onclick="startGame()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition">
+            START!
+        </button>
+    </div>
     </div>
     
     <div id="game-stats" class="mt-4 flex justify-center gap-4 font-bold">
@@ -302,7 +306,7 @@
     <footer class="bg-gray-800 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 Healthy Life Project. All rights reserved.</p>
-            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.4.6</p>
+            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.4.7</p>
         </div>
     </footer>
 
@@ -750,6 +754,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+        
+
+
         const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 let score = { p: 0, c: 0, f: 0 };
@@ -815,10 +822,20 @@ canvas.addEventListener('mousemove', (e) => {
 });
 
 function startGame() {
+    // 1. スコアをリセット
     score = { p: 0, c: 0, f: 0 };
     fallingItems = [];
+    
+    // 2. 表示を更新
+    document.getElementById('g-protein').innerText = '0';
+    document.getElementById('g-carbs').innerText = '0';
+    document.getElementById('g-fats').innerText = '0';
+
+    // 3. ゲームをアクティブにしてオーバーレイを隠す
     gameActive = true;
-    document.getElementById('game-overlay').classList.add('hidden');
+    document.getElementById('game-overlay').style.display = 'none'; 
+
+    // 4. ゲームループ開始
     gameLoop();
 }
 
