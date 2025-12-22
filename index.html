@@ -270,7 +270,7 @@
     <footer class="bg-gray-800 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 Healthy Life Project. All rights reserved.</p>
-            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.4.5</p>
+            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.3.5</p>
         </div>
     </footer>
 
@@ -571,7 +571,7 @@ function initializeNutritionChart() {
     // 起動時はデフォルトの "balanced" でチャートを表示
     const defaultGoal = "balanced";
     const setting = goalSettings[defaultGoal];
-    updateNutritionChart(setting.ratio, 2000); 
+    updateChart(setting.ratio, 2000); 
 }
 
 // 2. チャート更新関数
@@ -688,7 +688,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // チャートを初期化（これでエラーが消えます）
-    initializeNutritionChart();
+    initializeChart();
 });
 
 </script>
