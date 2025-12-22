@@ -237,26 +237,41 @@
 
 
 
-
-        <section id="game-section" class="mt-12 p-6 bg-white rounded-2xl shadow-lg text-center">
-    <h3 class="text-2xl font-bold mb-4 text-comfortaa">PFC Nutri-Catch</h3>
-    <p class="text-sm text-gray-600 mb-4">目標に合わせて栄養をキャッチ！</p>
-    
-    <div class="relative inline-block border-4 border-[var(--color-green)] rounded-xl overflow-hidden bg-blue-50">
-        <canvas id="gameCanvas" width="1200" height="500"></canvas>
         
-        <div id="game-overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 transition-all">
-        <h4 class="text-white text-xl font-bold mb-4">Nutri-Catch Game</h4>
-        <button onclick="startGame()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition">
-            START!
-        </button>
+
+
+
+<section id="game-section" class="mt-12 p-8 bg-white rounded-2xl shadow-xl text-center border-2 border-dashed border-gray-200">
+    <h3 class="text-3xl font-bold mb-2 text-comfortaa text-[var(--color-green)]">PFC Nutri-Catch</h3>
+    
+    <div class="max-w-md mx-auto mb-6 p-4 bg-orange-50 rounded-lg text-sm text-gray-700">
+            <p class="font-bold text-orange-600 mb-1">【How to play】</p>
+        <p>Move your mouse to catch items!<br>
+        To win the game by catching at least 5 of each of the nutrients in a balanced manner that matches your goal within 30 seconds!</p>
     </div>
+
+    <div class="mb-4 text-2xl font-mono font-bold">
+        Time Left: <span id="game-timer" class="text-red-500">30</span>s
     </div>
     
-    <div id="game-stats" class="mt-4 flex justify-center gap-4 font-bold">
-        <span class="text-orange-600">Carbs: <span id="g-carbs">0</span></span>
-        <span class="text-green-700">Protein: <span id="g-protein">0</span></span>
-        <span class="text-gray-500">Fats: <span id="g-fats">0</span></span>
+    <div class="relative inline-block border-8 border-gray-800 rounded-2xl overflow-hidden shadow-2xl bg-blue-50">
+        <canvas id="gameCanvas" width="400" height="500"></canvas>
+        
+        <div id="game-overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/60 transition-all">
+            <div id="overlay-content" class="text-white text-center">
+                <h4 id="game-result-title" class="text-3xl font-bold mb-4">Are You Ready?</h4>
+                <p id="game-result-msg" class="mb-6 opacity-90">Gather your target nutrients!</p>
+                <button onclick="startGame()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-10 rounded-full shadow-lg transform hover:scale-105 transition">
+                    START GAME
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="game-stats" class="mt-6 flex justify-center gap-8 text-lg font-bold">
+        <div class="flex flex-col"><span class="text-2xl">🍚</span><span id="g-carbs" class="text-orange-600">0</span></div>
+        <div class="flex flex-col"><span class="text-2xl">🥩</span><span id="g-protein" class="text-green-700">0</span></div>
+        <div class="flex flex-col"><span class="text-2xl">🧈</span><span id="g-fats" class="text-gray-500">0</span></div>
     </div>
 </section>
 
@@ -306,7 +321,7 @@
     <footer class="bg-gray-800 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 Healthy Life Project. All rights reserved.</p>
-            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.4.7</p>
+            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.5.7</p>
         </div>
     </footer>
 
@@ -821,26 +836,60 @@ canvas.addEventListener('mousemove', (e) => {
     basket.x = e.clientX - rect.left - basket.width / 2;
 });
 
+let timeLeft = 30;
+let timerId = null;
+
+        
 function startGame() {
     // 1. スコアをリセット
     score = { p: 0, c: 0, f: 0 };
     fallingItems = [];
+    timeLeft = 30;
+    gameActive = true;
     
     // 2. 表示を更新
     document.getElementById('g-protein').innerText = '0';
     document.getElementById('g-carbs').innerText = '0';
     document.getElementById('g-fats').innerText = '0';
+    document.getElementById('game-timer').innerText = timeLeft;
+    document.getElementById('game-overlay').classList.add('hidden');
 
-    // 3. ゲームをアクティブにしてオーバーレイを隠す
-    gameActive = true;
-    document.getElementById('game-overlay').style.display = 'none'; 
+    // タイマー開始
+    if (timerId) clearInterval(timerId);
+    timerId = setInterval(() => {
+        timeLeft--;
+        document.getElementById('game-timer').innerText = timeLeft;
+        if (timeLeft <= 0) endGame();
+    }, 1000);
 
     // 4. ゲームループ開始
     gameLoop();
 }
 
 
+function endGame() {
+    gameActive = false;
+    clearInterval(timerId);
+    
+    const overlay = document.getElementById('game-overlay');
+    const title = document.getElementById('game-result-title');
+    const msg = document.getElementById('game-result-msg');
+    
+    // クリア判定（例：各栄養素5個以上でクリア）
+    const isClear = score.p >= 5 && score.c >= 5 && score.f >= 5;
 
+    overlay.classList.remove('hidden');
+    
+    if (isClear) {
+        title.innerText = "✨ MISSION CLEAR! ✨";
+        title.className = "text-3xl font-bold mb-4 text-yellow-400";
+        msg.innerHTML = `It's a great balance!<br>P:${score.p} C:${score.c} F:${score.f}`;
+    } else {
+        title.innerText = "💥 GAME OVER 💥";
+        title.className = "text-3xl font-bold mb-4 text-red-500";
+        msg.innerHTML = `Not enough nutrients! Collect more!<br>Goal: 5 or more each`;
+    }
+}
 
 
 
