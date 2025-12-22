@@ -211,7 +211,9 @@
                     <!-- Nutrition Chart (Chart.js) -->
                     <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg">
                         <h3 class="text-2xl font-semibold text-[var(--color-orange)] mb-4">Daily Nutritional Breakdown (Mock)</h3>
-                        <canvas id="nutritionChart"></canvas>
+                        <div class="w-full max-w-[250px] mx-auto">
+                          <canvas id="nutritionChart"></canvas>
+                        </div>
                         <p class="text-sm text-gray-500 mt-4">
                             *This chart represents a healthy, balanced daily target.
                         </p>
@@ -283,7 +285,7 @@
     <footer class="bg-gray-800 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 Healthy Life Project. All rights reserved.</p>
-            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.3.4</p>
+            <p class="mt-2 text-gray-400">Designed with <i class="fa-solid fa-heart text-red-500"></i> for everyone's health. Ver 0.3.5</p>
         </div>
     </footer>
 
@@ -521,6 +523,9 @@
         document.getElementById('modal-directions-list').innerHTML = `<ol class="list-decimal list-inside space-y-2">${formattedDirections}</ol>`;
 
 
+        updateNutritionChart(recipe);
+
+        
         // Show the modal
         recipeModal.classList.remove('hidden');
         recipeModal.setAttribute('aria-hidden', 'false');
@@ -577,57 +582,33 @@
 
         
         // 2. ゴールに応じたPFCバランス（炭水化物/タンパク質/脂質）の定義
+// --- DATA: goalSettings と recipes は既存のものを使用 ---
 const goalSettings = {
-    "loss":   { ratio: [40, 40, 20], label: "Low Carb / High Protein" },
-    "gain":   { ratio: [50, 30, 20], label: "High Carb / High Protein" },
-    "balanced":      { ratio: [50, 20, 30], label: "Standard Balanced" },
-    "slim":      { ratio: [45, 25, 30], label: "Lean Focus" },
-    "vegetarian":    { ratio: [55, 20, 25], label: "Plant-based Balance" }
+    "loss": { ratio: [40, 40, 20], label: "Low Carb / High Protein" },
+    "gain": { ratio: [50, 30, 20], label: "High Carb / High Protein" },
+    "balanced": { ratio: [50, 20, 30], label: "Standard Balanced" },
+    "slim": { ratio: [45, 25, 30], label: "Lean Focus" },
+    "vegetarian": { ratio: [55, 20, 25], label: "Plant-based Balance" }
 };
 
 let nutritionChart; // チャートのインスタンス保持用
+let recipeModal;    // モーダル保持用
 
-// 3. メイン更新関数（計算後にこれを呼び出す）
-function updateDashboard(tdee, healthGoal) {
-    // A. グラフの更新
-    const setting = goalSettings[userGoal] || goalSettings["balanced"];
-    updateNutritionChart(setting.ratio, tdee);
-
-    // B. おすすめメニューの抽出
-    // ユーザーのゴールタグが含まれるレシピをフィルタリング
-    const recommended = recipes.filter(r => r.tags.includes(healthGoal));
-    
-    // 最大3つまで表示。足りない場合は全体から補充
-    const displayMeals = [...recommended, ...recipes].slice(0, 3);
-    
-    const menuList = document.querySelector('#nutrition-plan ul');
-    const mealIcons = ['fa-sun', 'fa-burger', 'fa-moon'];
-    const mealLabels = ['Breakfast', 'Lunch', 'Dinner'];
-
-    menuList.innerHTML = ''; // 一旦空にする
-
-    displayMeals.forEach((meal, index) => {
-        const li = document.createElement('li');
-        li.className = `${index % 2 === 0 ? 'bg-[var(--color-light-green)]' : 'bg-gray-100'} p-4 rounded-lg flex items-center shadow-md`;
-        li.innerHTML = `
-            <i class="fa-solid ${mealIcons[index]} text-2xl text-[var(--color-green)] mr-4"></i>
-            <div>
-                <span class="font-bold">${mealLabels[index]}:</span> ${meal.name}
-                <span class="text-xs ml-2 bg-white px-2 py-1 rounded border text-gray-500">${healthGoal}</span>
-            </div>
-        `;
-        menuList.appendChild(li);
-    });
-
-    // テキストの更新
-    document.querySelector('#nutrition-plan p').innerText = `Based on your TDEE (${tdee} kcal) and goal: ${healthGoal.toUpperCase()}`;
+// 1. 【エラー解消】初期化関数を定義
+function initializeNutritionChart() {
+    // 起動時はデフォルトの "balanced" でチャートを表示
+    const defaultGoal = "balanced";
+    const setting = goalSettings[defaultGoal];
+    updateNutritionChart(setting.ratio, 2000); 
 }
 
-// 4. チャート初期化・更新関数
+// 2. チャート更新関数
 function updateNutritionChart(ratios, tdee) {
-    const ctx = document.getElementById('nutritionChart').getContext('2d');
+    const canvas = document.getElementById('nutritionChart');
+    if (!canvas) return; // キャンバスがない場合はスキップ
+
+    const ctx = canvas.getContext('2d');
     
-    // すでにチャートがあれば破壊して再作成（データの更新）
     if (nutritionChart) {
         nutritionChart.destroy();
     }
@@ -645,35 +626,62 @@ function updateNutritionChart(ratios, tdee) {
         options: {
             responsive: true,
             plugins: {
-                legend: { position: 'top' },
-                // 中央にTDEEを表示する等のカスタムも可能
+                legend: { position: 'top' }
             }
         }
     });
 }
 
-// テスト実行（本来はフォーム送信時などに呼び出す）
-window.onload = () => {
-    // 例：TDEEが2000で、ゴールが"weight loss"の場合
-    updateDashboard(2000, "weight loss"); 
-};
+// 3. モーダルを開く関数（材料とアイコン対応版）
+function openRecipeModal(recipeId) {
+    const recipe = recipes.find(r => r.id === recipeId);
+    if (!recipe) return;
 
+    // 基本情報
+    document.getElementById('modal-title').textContent = recipe.title;
+    document.getElementById('modal-image').src = recipe.image;
+    document.getElementById('modal-description').textContent = recipe.description;
+    document.getElementById('modal-calories').textContent = recipe.calories;
+    document.getElementById('modal-macros').textContent = recipe.macros;
+    
+    // アイコン付きデータの更新
+    document.getElementById('modal-time').textContent = recipe.time;
+    document.getElementById('modal-servings').textContent = recipe.servings;
 
+    // 材料 (Ingredients) のリスト化
+    const ingredientsHtml = recipe.ingredients.split('\n')
+        .filter(line => line.trim() !== '')
+        .map(line => `<li class="mb-1">${line.trim()}</li>`).join('');
+    document.getElementById('modal-ingredients-list').innerHTML = `<ul class="list-disc list-inside">${ingredientsHtml}</ul>`;
 
+    // 手順 (Directions) のリスト化
+    const directionsHtml = recipe.directions.split('\n')
+        .filter(line => line.trim() !== '')
+        .map(line => `<li class="mb-2">${line.trim()}</li>`).join('');
+    document.getElementById('modal-directions-list').innerHTML = `<ol class="list-decimal list-inside">${directionsHtml}</ol>`;
 
+    // モーダル表示
+    recipeModal.classList.remove('hidden');
+    recipeModal.setAttribute('aria-hidden', 'false');
+}
 
+function closeRecipeModal() {
+    recipeModal.classList.add('hidden');
+    recipeModal.setAttribute('aria-hidden', 'true');
+}
 
-
-        
-    // --- Initialize on DOM Load ---
-    document.addEventListener('DOMContentLoaded', (event) => {
-        // Find and set up the modal element
-        recipeModal = document.getElementById('recipe-modal');
-        // Initial render of all recipes
+// --- イベントリスナー ---
+document.addEventListener('DOMContentLoaded', () => {
+    recipeModal = document.getElementById('recipe-modal');
+    
+    // レシピ一覧を表示
+    if (typeof filterRecipes === 'function') {
         filterRecipes(); 
-        // Initial setup of the chart
-        initializeNutritionChart();
-    });
+    }
+
+    // チャートを初期化（これでエラーが消えます）
+    initializeNutritionChart();
+});
 
 </script>
 
